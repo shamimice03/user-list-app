@@ -1,0 +1,67 @@
+# ---
+# apiVersion: v1
+# data:
+#   mysql-init.sql: |-
+#     CREATE DATABASE user_details;
+#     USE user_details;
+
+#     CREATE TABLE users (
+#         id INT PRIMARY KEY AUTO_INCREMENT,
+#         name VARCHAR(255) NOT NULL,
+#         email VARCHAR(255) NOT NULL
+#     );
+# kind: ConfigMap
+# metadata:
+#   name: mysql-init-script
+
+# ---
+# apiVersion: v1
+# kind: Secret
+# metadata:
+#   name: dbsecret
+# type: Opaque
+# data:
+#   ROOT_PASSWORD: cGFzc3dvcmQ=
+
+# ---
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   name: mysql-deployment
+# spec:
+#   replicas: 1
+#   selector:
+#     matchLabels:
+#       app: mysql
+#   template:
+#     metadata:
+#       labels:
+#         app: mysql
+#     spec:
+#       containers:
+#       - name: mysqldb
+#         image: mysql:latest
+#         ports:
+#         - containerPort: 3306
+#         volumeMounts:
+#         - name: mysql-persistent-storage
+#           mountPath: /var/lib/mysql
+#         - name: mysql-init-script
+#           mountPath: /etc/mysql-init
+#         env:
+#         - name: MYSQL_ROOT_PASSWORD
+#           valueFrom:
+#             secretKeyRef:
+#               key: ROOT_PASSWORD
+#               name: dbsecret
+#         args:
+#           - "/bin/sh"
+#           - "-c"
+#           - "sleep 30 && mysql -u root -p$MYSQL_ROOT_PASSWORD < /etc/mysql-init/mysql-init.sql"
+#       volumes:
+#       - name: mysql-persistent-storage
+#         emptyDir: {}
+#       - name: mysql-init-script
+#         configMap:
+#           name: mysql-init-script
+

@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mysql
+  template:
+    metadata:
+      labels:
+        app: mysql
+    spec:
+      containers:
+      - name: mysqldb
+        image: mysql:latest
+        ports:
+        - containerPort: 3306
+        volumeMounts:
+        - name: mysql-persistent-storage
+          mountPath: /var/lib/mysql
+        - name: mysql-init-script
+          mountPath: /etc/mysql-init
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: ROOT_PASSWORD
+              name: dbsecret
+        # args:
+        #   - "/bin/sh"
+        #   - "-c"
+        #   - "mysqladmin ping -p$MYSQL_ROOT_PASSWORD"
+        #   - "mysql -u root -p$MYSQL_ROOT_PASSWORD < /etc/mysql-init/mysql-init.sql"
+      volumes:
+      - name: mysql-persistent-storage
+        emptyDir: {}
+      - name: mysql-init-script
+        configMap:
+          name: mysql-init-script
