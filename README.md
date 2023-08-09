@@ -132,4 +132,7 @@ As a DevOps engineer, you'll likely need to interact with MySQL databases for va
     EXIT;
     ```
 
-These are some of the fundamental MySQL commands that can be helpful for a DevOps engineer when working with MySQL databases. Depending on your specific tasks and responsibilities, you may need to use additional commands and perform more advanced operations.
+
+***
+
+- [Creating MySQL pod with preloaded database](https://medium.com/@AbhijeetKasurde/creating-mysql-pod-with-preloaded-database-2c01c002fdc3)

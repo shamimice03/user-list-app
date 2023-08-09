@@ -15,11 +15,13 @@ spec:
       containers:
       - name: mysqldb
         image: mysql:latest
+        ports:
+         - containerPort: 3306
         volumeMounts:
         # - name: mysql-storage
         #   mountPath: /var/lib
         - name: mysql-init-script
-          mountPath: /etc/mysql-init
+          mountPath: /docker-entrypoint-initdb.d
         env:
         - name: MYSQL_ROOT_PASSWORD
           valueFrom:
@@ -29,19 +31,21 @@ spec:
         livenessProbe:
           exec:
             command:
-            - "/bin/sh"
+            - bash
             - "-c"
-            - "stat -L /var/run/mysqld/mysqld.sock"
-          initialDelaySeconds: 5
+            - |
+             mysqladmin -uroot -p$MYSQL_ROOT_PASSWORD ping &> /dev/null
+          initialDelaySeconds: 30
           periodSeconds: 5
-        readinessProbe:
-          exec:
-            command:
-            - "/bin/sh"
-            - "-c"
-            - "mysql -u root -p$MYSQL_ROOT_PASSWORD < /etc/mysql-init/mysql-init.sql"
-          initialDelaySeconds: 10
-          periodSeconds: 5
+        #   failureThreshold: 3
+        # readinessProbe:
+        #   exec:
+        #     command:
+        #     - "/bin/sh"
+        #     - "-c"
+        #     - "mysql -u root -p$MYSQL_ROOT_PASSWORD < /etc/mysql-init/mysql-init.sql"
+        #   initialDelaySeconds: 10
+        #   periodSeconds: 5
       volumes:
       # - name: mysql-storage
       #   emptyDir: {}
