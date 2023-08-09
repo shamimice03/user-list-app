@@ -1,5 +1,5 @@
-CREATE DATABASE user_details;
-USE user_details;
+CREATE DATABASE user_info;
+USE user_info;
 
 CREATE TABLE users (
     id INT PRIMARY KEY AUTO_INCREMENT,

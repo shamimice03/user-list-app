@@ -1,18 +1,17 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  creationTimestamp: null
-  labels:
-    run: test
-  name: test
+  name: frontend
 spec:
   containers:
-  - command:
-    - echo
-    - Hello, World
+  - name: app
     image: nginx
-    name: test
-    resources: {}
-  dnsPolicy: ClusterFirst
-  restartPolicy: Always
-status: {}
+    command: ["/bin/sh"]
+    args: ["-c", "echo 'Hello'; sleep infinity"]
+    resources:
+      requests:
+        memory: "64Mi"
+        cpu: "250m"
+      limits:
+        memory: "128Mi"
+        cpu: "500m"
