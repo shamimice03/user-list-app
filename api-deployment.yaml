@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: api
+  name: api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: api
+  template:
+    metadata:
+      labels:
+        app: api
+    spec:
+      containers:
+      - image: shamimice03/api:latest
+        name: api
+        ports:
+         - containerPort: 8080
+        env:
+        - name: DB_HOST
+          value: mysql-service.default.svc.cluster.local
+        - name: DB_PORT
+          value: "3306"
+        - name: DB_USER
+          value: root
+        - name: DB_NAME
+          value: "user_info"
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: dbsecret
+              key: ROOT_PASSWORD
+
