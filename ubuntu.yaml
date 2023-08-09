@@ -4,7 +4,7 @@ metadata:
   name: ubuntu
 spec:
   containers:
-  - name: ubuntu
+  - name: app
     image: ubuntu
     command: ["/bin/sh"]
     args: ["-c", "apt update && apt install -y mysql-client && sleep infinity"]
@@ -20,6 +20,3 @@ spec:
         secretKeyRef:
           name: dbsecret
           key: ROOT_PASSWORD
-
-# kubectl exec -it ubuntu bash
-# mysql -h $DATABASE_HOST -u$DATABASE_USER -p$DATABASE_PASSWORD
